@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'movies.dart';
 import 'dart:io';
+import 'package:carousel_slider/carousel_slider.dart';
 
 void main() {
+
   runApp(
       MaterialApp(
     home: Moviepage(),
@@ -16,6 +18,14 @@ void main() {
 String moviesList = MoviesList.moviesJsonList;
 List map = jsonDecode(moviesList);
 int i = 0;
+List imglist(List img){
+  List imglist = [];
+  for(i=0;i<30;i++) {
+    Map m = map[i];
+    imglist.add(m['poster']);
+  }
+  return imglist;
+}
 // Convert the string to List of maps using jsonDecode and then use it
 
 // Create a stateful widget called MoviesPage here
@@ -27,23 +37,16 @@ class Moviepage extends StatefulWidget {
 class _MoviepageState extends State<Moviepage> {
   @override
 
+  List temp =imglist(map);
 
 
-  void nextmovie() {
-    setState(() {
-      i = i+1;
-
-      print(i);
-    });
-  }
 
 
 
 
 
   Widget build(BuildContext context) {
-    Map p =map[i];
-    String j = p['poster'];
+
     return  Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -63,32 +66,28 @@ class _MoviepageState extends State<Moviepage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-                margin: EdgeInsets.fromLTRB(50, 0, 0, 50),
-                height: 400,
-                width: 300,
+                child: CarouselSlider(
+                  height: 400.0,
+                  items: temp.map((i) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            decoration: BoxDecoration(
+                                color: Colors.amber
+                            ),
+                            child: Image.network(
+                                 i,
+                              fit: BoxFit.fill,
+                            ),
+                        );
+                      },
+                    );
+                  }).toList(),
+                )
 
 
-                child: Image.network('$j')
-
-
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(100, 50, 25, 0),
-              height: 30,
-              width: 150,
-              color: Colors.yellow,
-              child: FlatButton(
-                child: Text(
-                  'Next Movie',
-                  style: TextStyle(
-                    color: Colors.black,
-
-                  ),
-                ),
-            onPressed: () {
-                  nextmovie();
-            },
-              ),
             ),
 
           ],
